@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, useInView } from 'motion/react';
 import { useLanguage } from '@/app/contexts/LanguageContext';
 import { mockFallenData, mockStats, FallenPerson } from '@/app/data/mockData';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useRef } from 'react';
+import { ChevronLeft, ChevronRight, Flame } from 'lucide-react';
 
 interface HomePageProps {
   onSelectPerson: (person: FallenPerson) => void;
@@ -38,6 +37,149 @@ function AnimatedCounter({ target }: { target: number }) {
   return <span ref={ref}>{count.toLocaleString()}</span>;
 }
 
+// Candle Section Component with localStorage logic
+function CandleSection() {
+  const { t } = useLanguage();
+  const [candleCount, setCandleCount] = useState(15847); // Mock initial count - ready for backend sync
+  const [canLight, setCanLight] = useState(true);
+  const [timeRemaining, setTimeRemaining] = useState(0);
+
+  useEffect(() => {
+    // Check localStorage for last candle lit time
+    const lastLit = localStorage.getItem('lastCandleLit');
+    if (lastLit) {
+      const timePassed = Date.now() - parseInt(lastLit);
+      const fiveMinutes = 5 * 60 * 1000;
+      
+      if (timePassed < fiveMinutes) {
+        setCanLight(false);
+        setTimeRemaining(Math.ceil((fiveMinutes - timePassed) / 1000));
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!canLight && timeRemaining > 0) {
+      const timer = setInterval(() => {
+        setTimeRemaining(prev => {
+          if (prev <= 1) {
+            setCanLight(true);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [canLight, timeRemaining]);
+
+  const handleLightCandle = () => {
+    if (canLight) {
+      localStorage.setItem('lastCandleLit', Date.now().toString());
+      setCandleCount(prev => prev + 1);
+      setCanLight(false);
+      setTimeRemaining(300); // 5 minutes in seconds
+      
+      // TODO: Sync with backend server
+      // await fetch('/api/candles', { method: 'POST' });
+    }
+  };
+
+  const minutesLeft = Math.floor(timeRemaining / 60);
+  const secondsLeft = timeRemaining % 60;
+
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8 }}
+      className="container mx-auto px-4 py-12 md:py-20"
+    >
+      <div className="max-w-4xl mx-auto">
+        <div className="bg-gradient-to-br from-[#10b981]/10 via-background to-[#ef4444]/10 backdrop-blur-xl border border-border/50 rounded-3xl p-8 md:p-12 shadow-2xl">
+          {/* Title */}
+          <div className="text-center mb-8 md:mb-12">
+            <h2 className="text-3xl md:text-5xl font-bold mb-3 md:mb-4">{t('candle.title')}</h2>
+            <p className="text-base md:text-lg text-muted-foreground">{t('candle.subtitle')}</p>
+          </div>
+
+          {/* Candle Display */}
+          <div className="flex flex-col items-center gap-6 md:gap-8">
+            {/* Animated Candle */}
+            <motion.div
+              animate={{
+                scale: [1, 1.05, 1],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="relative"
+            >
+              <div className="text-7xl md:text-9xl filter drop-shadow-2xl">🕯️</div>
+              {canLight && (
+                <motion.div
+                  animate={{
+                    opacity: [0.3, 0.7, 0.3],
+                    scale: [0.8, 1.2, 0.8],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                  }}
+                  className="absolute inset-0 bg-gradient-to-t from-[#ef4444]/30 via-[#f59e0b]/20 to-transparent rounded-full blur-2xl"
+                />
+              )}
+            </motion.div>
+
+            {/* Counter */}
+            <div className="text-center">
+              <motion.div
+                animate={{
+                  textShadow: [
+                    "0 0 20px rgba(239, 68, 68, 0.3)",
+                    "0 0 40px rgba(239, 68, 68, 0.5)",
+                    "0 0 20px rgba(239, 68, 68, 0.3)",
+                  ],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                }}
+                className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-[#10b981] via-[#f59e0b] to-[#ef4444] bg-clip-text text-transparent mb-2"
+              >
+                {candleCount.toLocaleString()}
+              </motion.div>
+              <p className="text-sm md:text-base text-muted-foreground uppercase tracking-wider">{t('candle.total')}</p>
+            </div>
+
+            {/* Button or Wait Message */}
+            {canLight ? (
+              <motion.button
+                onClick={handleLightCandle}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl bg-gradient-to-r from-[#10b981] to-[#ef4444] text-white font-semibold shadow-lg hover:shadow-2xl transition-all text-sm md:text-base"
+              >
+                <Flame className="w-5 h-5 md:w-6 md:h-6" />
+                <span>{t('candle.button')}</span>
+              </motion.button>
+            ) : (
+              <div className="text-center px-4 py-3 rounded-xl bg-muted/50 text-sm md:text-base">
+                <p className="text-muted-foreground">
+                  {t('candle.wait')} <span className="font-bold text-foreground">{minutesLeft}:{secondsLeft.toString().padStart(2, '0')}</span> {t('candle.minutes')}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </motion.section>
+  );
+}
+
 export function HomePage({ onSelectPerson, onNavigateToSubmit }: HomePageProps) {
   const { t, isRTL } = useLanguage();
   const [currentPage, setCurrentPage] = useState(0);
@@ -51,8 +193,8 @@ export function HomePage({ onSelectPerson, onNavigateToSubmit }: HomePageProps) 
 
   return (
     <div className="min-h-screen pt-16">
-      {/* Hero Section with Parallax */}
-      <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
+      {/* Hero Section with Fixed Layout */}
+      <section className="relative min-h-[60vh] md:h-[70vh] flex items-center justify-center overflow-hidden">
         {/* Animated Background */}
         <motion.div
           className="absolute inset-0 bg-gradient-to-br from-[#10b981]/10 via-background to-[#ef4444]/10"
@@ -67,12 +209,12 @@ export function HomePage({ onSelectPerson, onNavigateToSubmit }: HomePageProps) 
         />
         
         {/* Hero Content */}
-        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto py-12 md:py-0">
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-[#10b981] via-foreground to-[#ef4444] bg-clip-text text-transparent"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-[#10b981] via-foreground to-[#ef4444] bg-clip-text text-transparent leading-tight"
           >
             {t('home.hero.title')}
           </motion.h1>
@@ -80,17 +222,17 @@ export function HomePage({ onSelectPerson, onNavigateToSubmit }: HomePageProps) 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl md:text-2xl text-muted-foreground mb-12"
+            className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground mb-8 md:mb-12 px-4"
           >
             {t('home.hero.subtitle')}
           </motion.p>
 
-          {/* Live Data Dashboard */}
+          {/* Live Data Dashboard - Mobile Optimized */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12"
+            className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mt-8 md:mt-12"
           >
             {[
               { label: t('stats.lives.lost'), value: mockStats.livesLost, color: 'from-[#ef4444] to-red-600' },
@@ -105,15 +247,15 @@ export function HomePage({ onSelectPerson, onNavigateToSubmit }: HomePageProps) 
                 className="relative group"
               >
                 {/* Glassmorphism Card */}
-                <div className="relative bg-card/40 backdrop-blur-xl border border-border/50 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300">
+                <div className="relative bg-card/40 backdrop-blur-xl border border-border/50 rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg hover:shadow-2xl transition-all duration-300">
                   {/* Glow Effect */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity duration-300`} />
+                  <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-10 rounded-xl md:rounded-2xl transition-opacity duration-300`} />
                   
                   <div className="relative z-10">
-                    <div className={`text-4xl md:text-5xl font-bold bg-gradient-to-br ${stat.color} bg-clip-text text-transparent mb-2`}>
+                    <div className={`text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-br ${stat.color} bg-clip-text text-transparent mb-1 md:mb-2`}>
                       <AnimatedCounter target={stat.value} />
                     </div>
-                    <div className="text-sm md:text-base text-muted-foreground uppercase tracking-wider">
+                    <div className="text-xs sm:text-sm md:text-base text-muted-foreground uppercase tracking-wider">
                       {stat.label}
                     </div>
                   </div>
@@ -124,23 +266,26 @@ export function HomePage({ onSelectPerson, onNavigateToSubmit }: HomePageProps) 
         </div>
       </section>
 
+      {/* Candle Section */}
+      <CandleSection />
+
       {/* The Fallen Grid Section */}
-      <section className="container mx-auto px-4 py-20">
+      <section className="container mx-auto px-4 py-12 md:py-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-12 md:mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">{t('home.fallen.title')}</h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 md:mb-4">{t('home.fallen.title')}</h2>
+          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
             {t('home.fallen.subtitle')}
           </p>
         </motion.div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        {/* Grid - Mobile Optimized */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-8 md:mb-12">
           {currentData.map((person, index) => (
             <motion.div
               key={person.id}
@@ -148,14 +293,14 @@ export function HomePage({ onSelectPerson, onNavigateToSubmit }: HomePageProps) 
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ scale: 1.05, y: -10 }}
+              whileHover={{ scale: 1.03, y: -10 }}
               onClick={() => onSelectPerson(person)}
               className="cursor-pointer group"
             >
               {/* Legacy Card with Glassmorphism */}
               <div className="relative bg-card/60 backdrop-blur-xl border border-border/50 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300">
                 {/* Image */}
-                <div className="relative h-64 overflow-hidden">
+                <div className="relative h-56 sm:h-64 overflow-hidden">
                   <img
                     src={person.imageUrl}
                     alt={person.name}
@@ -169,10 +314,10 @@ export function HomePage({ onSelectPerson, onNavigateToSubmit }: HomePageProps) 
                 </div>
 
                 {/* Content */}
-                <div className="p-6">
-                  <h3 className="text-2xl font-bold mb-2">{person.name}</h3>
+                <div className="p-4 md:p-6">
+                  <h3 className="text-xl md:text-2xl font-bold mb-2">{person.name}</h3>
                   
-                  <div className="space-y-2 text-sm text-muted-foreground">
+                  <div className="space-y-1.5 md:space-y-2 text-sm text-muted-foreground">
                     <div className="flex justify-between items-center">
                       <span>{t('card.age')}:</span>
                       <span className="font-medium text-foreground">{person.age}</span>
@@ -195,19 +340,19 @@ export function HomePage({ onSelectPerson, onNavigateToSubmit }: HomePageProps) 
           ))}
         </div>
 
-        {/* Pagination */}
+        {/* Pagination - Mobile Optimized */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
-          className="flex items-center justify-center gap-4"
+          className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setCurrentPage(Math.max(0, currentPage - 1))}
             disabled={currentPage === 0}
-            className="flex items-center gap-2 px-6 py-3 rounded-xl bg-secondary hover:bg-secondary/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 rounded-xl bg-secondary hover:bg-secondary/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm md:text-base"
           >
             {isRTL ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
             <span>{t('pagination.previous')}</span>
@@ -218,7 +363,7 @@ export function HomePage({ onSelectPerson, onNavigateToSubmit }: HomePageProps) 
               <button
                 key={index}
                 onClick={() => setCurrentPage(index)}
-                className={`w-10 h-10 rounded-lg transition-colors ${
+                className={`w-8 h-8 md:w-10 md:h-10 rounded-lg transition-colors text-sm md:text-base ${
                   currentPage === index
                     ? 'bg-gradient-to-br from-[#10b981] to-[#ef4444] text-white'
                     : 'bg-secondary hover:bg-secondary/80'
@@ -234,26 +379,26 @@ export function HomePage({ onSelectPerson, onNavigateToSubmit }: HomePageProps) 
             whileTap={{ scale: 0.95 }}
             onClick={() => setCurrentPage(Math.min(totalPages - 1, currentPage + 1))}
             disabled={currentPage === totalPages - 1}
-            className="flex items-center gap-2 px-6 py-3 rounded-xl bg-secondary hover:bg-secondary/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 rounded-xl bg-secondary hover:bg-secondary/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm md:text-base"
           >
             <span>{t('pagination.next')}</span>
             {isRTL ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
           </motion.button>
         </motion.div>
 
-        {/* CTA to Submit */}
+        {/* CTA to Submit - Mobile Optimized */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mt-20"
+          className="text-center mt-12 md:mt-20"
         >
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={onNavigateToSubmit}
-            className="px-8 py-4 rounded-xl bg-gradient-to-r from-[#10b981] to-[#ef4444] text-white font-semibold shadow-lg hover:shadow-2xl transition-all"
+            className="px-6 md:px-8 py-3 md:py-4 rounded-xl bg-gradient-to-r from-[#10b981] to-[#ef4444] text-white font-semibold shadow-lg hover:shadow-2xl transition-all text-sm md:text-base"
           >
             {t('submit.title')}
           </motion.button>

@@ -31,6 +31,14 @@ const translations = {
     'pagination.previous': 'Previous',
     'pagination.next': 'Next',
     
+    // Candle Section
+    'candle.title': 'Light a Candle',
+    'candle.subtitle': 'Honor their memory with a moment of light',
+    'candle.button': 'Light a Candle',
+    'candle.total': 'Candles Lit',
+    'candle.wait': 'You can light another candle in',
+    'candle.minutes': 'minutes',
+    
     // Profile Page
     'profile.share': 'Share Their Story',
     'profile.biography': 'Biography',
@@ -40,12 +48,26 @@ const translations = {
     // Submit Page
     'submit.title': 'Secure Submission Portal',
     'submit.subtitle': 'Help us honor those who lost their lives. Your privacy is protected.',
-    'submit.form.name': 'Full Name',
+    'submit.form.firstname': 'First Name',
+    'submit.form.lastname': 'Last Name',
+    'submit.form.gender': 'Gender',
+    'submit.form.gender.male': 'Male',
+    'submit.form.gender.female': 'Female',
+    'submit.form.gender.other': 'Other',
     'submit.form.age': 'Age',
-    'submit.form.location': 'Location',
-    'submit.form.date': 'Date of Loss',
-    'submit.form.story': 'Their Story',
-    'submit.form.contact': 'Contact (Optional & Encrypted)',
+    'submit.form.javid.date': 'Date of Loss (Javid Date)',
+    'submit.form.javid.location': 'City/Province',
+    'submit.form.location.description': 'Location Description',
+    'submit.form.bio': 'Short Biography',
+    'submit.form.description': 'Detailed Description',
+    'submit.form.status': 'Status',
+    'submit.form.status.child': 'Was a Child',
+    'submit.form.status.executed': 'Was Executed',
+    'submit.form.status.arrested': 'Was Arrested',
+    'submit.form.status.missing': 'Is Missing',
+    'submit.form.sources': 'Sources & Links',
+    'submit.form.sources.add': 'Add Link',
+    'submit.form.sources.placeholder': 'Enter URL (Twitter, Instagram, News article, etc.)',
     'submit.form.submit': 'Submit Securely',
     'submit.security.title': 'Your Security',
     'submit.security.encryption': 'End-to-End Encryption',
@@ -57,7 +79,6 @@ const translations = {
     
     // Footer
     'footer.github': 'View on GitHub',
-    'footer.candle': 'Light a Digital Candle',
     'footer.rights': '2026 Iran Freedom Archive. In memory of all who fought for freedom.',
   },
   fa: {
@@ -79,6 +100,14 @@ const translations = {
     'pagination.previous': 'قبلی',
     'pagination.next': 'بعدی',
     
+    // Candle Section
+    'candle.title': 'روشن کردن شمع',
+    'candle.subtitle': 'با یک لحظه نور به یاد آنها ادای احترام کنید',
+    'candle.button': 'روشن کردن شمع',
+    'candle.total': 'شمع‌های روشن شده',
+    'candle.wait': 'می‌توانید شمع دیگری را روشن کنید در',
+    'candle.minutes': 'دقیقه',
+    
     // Profile Page
     'profile.share': 'داستان آنها را به اشتراک بگذارید',
     'profile.biography': 'زندگی‌نامه',
@@ -88,12 +117,26 @@ const translations = {
     // Submit Page
     'submit.title': 'پورتال ارسال امن',
     'submit.subtitle': 'به ما کمک کنید تا به یاد کسانی که جان خود را از دست دادند، ادای احترام کنیم. حریم خصوصی شما محافظت می‌شود.',
-    'submit.form.name': 'نام کامل',
+    'submit.form.firstname': 'نام',
+    'submit.form.lastname': 'نام خانوادگی',
+    'submit.form.gender': 'جنسیت',
+    'submit.form.gender.male': 'مرد',
+    'submit.form.gender.female': 'زن',
+    'submit.form.gender.other': 'غیره',
     'submit.form.age': 'سن',
-    'submit.form.location': 'موقعیت',
-    'submit.form.date': 'تاریخ از دست دادن',
-    'submit.form.story': 'داستان آنها',
-    'submit.form.contact': 'تماس (اختیاری و رمزگذاری شده)',
+    'submit.form.javid.date': 'تاریخ جاودانگی',
+    'submit.form.javid.location': 'شهر/استان',
+    'submit.form.location.description': 'توضیحات مکان',
+    'submit.form.bio': 'زندگی‌نامه کوتاه',
+    'submit.form.description': 'توضیحات کامل',
+    'submit.form.status': 'وضعیت',
+    'submit.form.status.child': 'کودک بود',
+    'submit.form.status.executed': 'اعدام شد',
+    'submit.form.status.arrested': 'بازداشت شد',
+    'submit.form.status.missing': 'مفقود است',
+    'submit.form.sources': 'منابع و لینک‌ها',
+    'submit.form.sources.add': 'افزودن لینک',
+    'submit.form.sources.placeholder': 'لینک وارد کنید (توییتر، اینستاگرام، مقاله خبری و غیره)',
     'submit.form.submit': 'ارسال امن',
     'submit.security.title': 'امنیت شما',
     'submit.security.encryption': 'رمزگذاری سرتاسر',
@@ -105,7 +148,6 @@ const translations = {
     
     // Footer
     'footer.github': 'مشاهده در GitHub',
-    'footer.candle': 'روشن کردن شمع دیجیتال',
     'footer.rights': '۲۰۲۶ آرشیو آزادی ایران. به یاد همه کسانی که برای آزادی جنگیدند.',
   },
   ar: {
@@ -127,6 +169,14 @@ const translations = {
     'pagination.previous': 'السابق',
     'pagination.next': 'التالي',
     
+    // Candle Section
+    'candle.title': 'أشعل شمعة',
+    'candle.subtitle': 'كرم ذكراهم بلحظة من النور',
+    'candle.button': 'أشعل شمعة',
+    'candle.total': 'الشموع المضاءة',
+    'candle.wait': 'يمكنك إشعال شمعة أخرى في',
+    'candle.minutes': 'دقائق',
+    
     // Profile Page
     'profile.share': 'شارك قصتهم',
     'profile.biography': 'السيرة الذاتية',
@@ -136,12 +186,26 @@ const translations = {
     // Submit Page
     'submit.title': 'بوابة التقديم الآمنة',
     'submit.subtitle': 'ساعدنا في تكريم أولئك الذين فقدوا حياتهم. خصوصيتك محمية.',
-    'submit.form.name': 'الاسم الكامل',
+    'submit.form.firstname': 'الاسم الأول',
+    'submit.form.lastname': 'اسم العائلة',
+    'submit.form.gender': 'الجنس',
+    'submit.form.gender.male': 'ذكر',
+    'submit.form.gender.female': 'أنثى',
+    'submit.form.gender.other': 'آخر',
     'submit.form.age': 'العمر',
-    'submit.form.location': 'الموقع',
-    'submit.form.date': 'تاريخ الفقدان',
-    'submit.form.story': 'قصتهم',
-    'submit.form.contact': 'الاتصال (اختياري ومشفر)',
+    'submit.form.javid.date': 'تاريخ الفقدان',
+    'submit.form.javid.location': 'المدينة/المحافظة',
+    'submit.form.location.description': 'وصف الموقع',
+    'submit.form.bio': 'سيرة ذاتية مختصرة',
+    'submit.form.description': 'وصف مفصل',
+    'submit.form.status': 'الحالة',
+    'submit.form.status.child': 'كان طفلاً',
+    'submit.form.status.executed': 'تم إعدامه',
+    'submit.form.status.arrested': 'تم اعتقاله',
+    'submit.form.status.missing': 'مفقود',
+    'submit.form.sources': 'المصادر والروابط',
+    'submit.form.sources.add': 'إضافة رابط',
+    'submit.form.sources.placeholder': 'أدخل الرابط (تويتر، إنستغرام، مقالة إخبارية، إلخ)',
     'submit.form.submit': 'إرسال بشكل آمن',
     'submit.security.title': 'أمنك',
     'submit.security.encryption': 'التشفير الكامل',
@@ -153,7 +217,6 @@ const translations = {
     
     // Footer
     'footer.github': 'عرض على GitHub',
-    'footer.candle': 'أشعل شمعة رقمية',
     'footer.rights': '٢٠٢٦ أرشيف الحرية الإيراني. في ذكرى كل من قاتل من أجل الحرية.',
   },
   de: {
@@ -175,6 +238,14 @@ const translations = {
     'pagination.previous': 'Zurück',
     'pagination.next': 'Weiter',
     
+    // Candle Section
+    'candle.title': 'Kerze anzünden',
+    'candle.subtitle': 'Ehre ihr Andenken mit einem Moment des Lichts',
+    'candle.button': 'Kerze anzünden',
+    'candle.total': 'Angezündete Kerzen',
+    'candle.wait': 'Sie können eine weitere Kerze anzünden in',
+    'candle.minutes': 'Minuten',
+    
     // Profile Page
     'profile.share': 'Teile ihre Geschichte',
     'profile.biography': 'Biografie',
@@ -184,12 +255,26 @@ const translations = {
     // Submit Page
     'submit.title': 'Sicheres Einreichungsportal',
     'submit.subtitle': 'Helfen Sie uns, diejenigen zu ehren, die ihr Leben verloren haben. Ihre Privatsphäre ist geschützt.',
-    'submit.form.name': 'Vollständiger Name',
+    'submit.form.firstname': 'Vorname',
+    'submit.form.lastname': 'Nachname',
+    'submit.form.gender': 'Geschlecht',
+    'submit.form.gender.male': 'Männlich',
+    'submit.form.gender.female': 'Weiblich',
+    'submit.form.gender.other': 'Andere',
     'submit.form.age': 'Alter',
-    'submit.form.location': 'Ort',
-    'submit.form.date': 'Datum des Verlustes',
-    'submit.form.story': 'Ihre Geschichte',
-    'submit.form.contact': 'Kontakt (Optional & Verschlüsselt)',
+    'submit.form.javid.date': 'Datum des Verlustes',
+    'submit.form.javid.location': 'Stadt/Provinz',
+    'submit.form.location.description': 'Ortsbeschreibung',
+    'submit.form.bio': 'Kurze Biografie',
+    'submit.form.description': 'Detaillierte Beschreibung',
+    'submit.form.status': 'Status',
+    'submit.form.status.child': 'War ein Kind',
+    'submit.form.status.executed': 'Wurde hingerichtet',
+    'submit.form.status.arrested': 'Wurde verhaftet',
+    'submit.form.status.missing': 'Wird vermisst',
+    'submit.form.sources': 'Quellen & Links',
+    'submit.form.sources.add': 'Link hinzufügen',
+    'submit.form.sources.placeholder': 'URL eingeben (Twitter, Instagram, Nachrichtenartikel, etc.)',
     'submit.form.submit': 'Sicher einreichen',
     'submit.security.title': 'Ihre Sicherheit',
     'submit.security.encryption': 'Ende-zu-Ende-Verschlüsselung',
@@ -201,7 +286,6 @@ const translations = {
     
     // Footer
     'footer.github': 'Auf GitHub ansehen',
-    'footer.candle': 'Zünde eine digitale Kerze an',
     'footer.rights': '2026 Iran Freiheitsarchiv. In Erinnerung an alle, die für Freiheit kämpften.',
   },
 };
