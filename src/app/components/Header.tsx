@@ -39,7 +39,7 @@ export function Header({ onNavigate }: HeaderProps) {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
-          <div className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center bg-gradient-to-br from-[#10b981] via-white to-[#ef4444] p-[2px]">
+          <div className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center bg-gradient-to-br from-[#1a4d2e] via-[#e8e8e8] to-[#8b0000] p-[2px]">
             <div className="w-full h-full rounded-full bg-background flex items-center justify-center">
               <span className="text-base md:text-xl">🕊️</span>
             </div>

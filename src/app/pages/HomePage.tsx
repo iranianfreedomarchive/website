@@ -3,6 +3,7 @@ import { motion, useInView } from 'motion/react';
 import { useLanguage } from '@/app/contexts/LanguageContext';
 import { mockFallenData, mockStats, FallenPerson } from '@/app/data/mockData';
 import { ChevronLeft, ChevronRight, Flame } from 'lucide-react';
+import { RealisticCandle } from '@/app/components/RealisticCandle';
 
 interface HomePageProps {
   onSelectPerson: (person: FallenPerson) => void;
@@ -17,7 +18,7 @@ function AnimatedCounter({ target }: { target: number }) {
   useEffect(() => {
     if (isInView) {
       let start = 0;
-      const duration = 2000;
+      const duration = 3000; // Slower animation
       const increment = target / (duration / 16);
       
       const timer = setInterval(() => {
@@ -43,6 +44,7 @@ function CandleSection() {
   const [candleCount, setCandleCount] = useState(15847); // Mock initial count - ready for backend sync
   const [canLight, setCanLight] = useState(true);
   const [timeRemaining, setTimeRemaining] = useState(0);
+  const [candleLit, setCandleLit] = useState(false);
 
   useEffect(() => {
     // Check localStorage for last candle lit time
@@ -54,6 +56,7 @@ function CandleSection() {
       if (timePassed < fiveMinutes) {
         setCanLight(false);
         setTimeRemaining(Math.ceil((fiveMinutes - timePassed) / 1000));
+        setCandleLit(true); // Show lit candle
       }
     }
   }, []);
@@ -64,6 +67,7 @@ function CandleSection() {
         setTimeRemaining(prev => {
           if (prev <= 1) {
             setCanLight(true);
+            setCandleLit(false);
             return 0;
           }
           return prev - 1;
@@ -78,6 +82,7 @@ function CandleSection() {
       localStorage.setItem('lastCandleLit', Date.now().toString());
       setCandleCount(prev => prev + 1);
       setCanLight(false);
+      setCandleLit(true);
       setTimeRemaining(300); // 5 minutes in seconds
       
       // TODO: Sync with backend server
@@ -93,85 +98,96 @@ function CandleSection() {
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.8 }}
-      className="container mx-auto px-4 py-12 md:py-20"
+      transition={{ duration: 1.2, ease: "easeOut" }}
+      className="container mx-auto px-4 py-16 md:py-24"
     >
       <div className="max-w-4xl mx-auto">
-        <div className="bg-gradient-to-br from-[#10b981]/10 via-background to-[#ef4444]/10 backdrop-blur-xl border border-border/50 rounded-3xl p-8 md:p-12 shadow-2xl">
+        <div className="bg-gradient-to-br from-[#1a4d2e]/20 via-card/40 to-[#8b0000]/20 backdrop-blur-xl border border-[#8b0000]/30 rounded-3xl p-8 md:p-16 shadow-2xl">
           {/* Title */}
-          <div className="text-center mb-8 md:mb-12">
-            <h2 className="text-3xl md:text-5xl font-bold mb-3 md:mb-4">{t('candle.title')}</h2>
-            <p className="text-base md:text-lg text-muted-foreground">{t('candle.subtitle')}</p>
+          <div className="text-center mb-12 md:mb-16">
+            <motion.h2 
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.5 }}
+              className="text-3xl md:text-5xl font-bold mb-3 md:mb-4 text-[#e8e8e8]"
+            >
+              {t('candle.title')}
+            </motion.h2>
+            <motion.p 
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.5, delay: 0.3 }}
+              className="text-base md:text-lg text-muted-foreground"
+            >
+              {t('candle.subtitle')}
+            </motion.p>
           </div>
 
-          {/* Candle Display */}
-          <div className="flex flex-col items-center gap-6 md:gap-8">
-            {/* Animated Candle */}
+          {/* Realistic Candle Display */}
+          <div className="flex flex-col items-center gap-8 md:gap-12">
             <motion.div
-              animate={{
-                scale: [1, 1.05, 1],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-              className="relative"
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.2, ease: "easeOut" }}
             >
-              <div className="text-7xl md:text-9xl filter drop-shadow-2xl">🕯️</div>
-              {canLight && (
-                <motion.div
-                  animate={{
-                    opacity: [0.3, 0.7, 0.3],
-                    scale: [0.8, 1.2, 0.8],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                  }}
-                  className="absolute inset-0 bg-gradient-to-t from-[#ef4444]/30 via-[#f59e0b]/20 to-transparent rounded-full blur-2xl"
-                />
-              )}
+              <RealisticCandle isLit={candleLit} />
             </motion.div>
 
-            {/* Counter */}
-            <div className="text-center">
+            {/* Counter with Somber Glow */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.5, delay: 0.6 }}
+              className="text-center"
+            >
               <motion.div
-                animate={{
+                animate={candleLit ? {
                   textShadow: [
-                    "0 0 20px rgba(239, 68, 68, 0.3)",
-                    "0 0 40px rgba(239, 68, 68, 0.5)",
-                    "0 0 20px rgba(239, 68, 68, 0.3)",
+                    "0 0 20px rgba(139, 0, 0, 0.4)",
+                    "0 0 40px rgba(139, 0, 0, 0.6)",
+                    "0 0 20px rgba(139, 0, 0, 0.4)",
                   ],
-                }}
+                } : {}}
                 transition={{
-                  duration: 2,
-                  repeat: Infinity,
+                  duration: 3,
+                  repeat: candleLit ? Infinity : 0,
                 }}
-                className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-[#10b981] via-[#f59e0b] to-[#ef4444] bg-clip-text text-transparent mb-2"
+                className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-[#1a4d2e] via-[#a01010] to-[#8b0000] bg-clip-text text-transparent mb-2"
               >
                 {candleCount.toLocaleString()}
               </motion.div>
               <p className="text-sm md:text-base text-muted-foreground uppercase tracking-wider">{t('candle.total')}</p>
-            </div>
+            </motion.div>
 
             {/* Button or Wait Message */}
             {canLight ? (
               <motion.button
                 onClick={handleLightCandle}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl bg-gradient-to-r from-[#10b981] to-[#ef4444] text-white font-semibold shadow-lg hover:shadow-2xl transition-all text-sm md:text-base"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.2, delay: 0.8 }}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className="flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl bg-gradient-to-r from-[#1a4d2e] to-[#8b0000] text-[#e8e8e8] font-semibold shadow-lg hover:shadow-[0_0_30px_rgba(139,0,0,0.4)] transition-all duration-500 text-sm md:text-base border border-[#8b0000]/50"
               >
                 <Flame className="w-5 h-5 md:w-6 md:h-6" />
                 <span>{t('candle.button')}</span>
               </motion.button>
             ) : (
-              <div className="text-center px-4 py-3 rounded-xl bg-muted/50 text-sm md:text-base">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-center px-4 py-3 rounded-xl bg-muted/30 text-sm md:text-base border border-border"
+              >
                 <p className="text-muted-foreground">
-                  {t('candle.wait')} <span className="font-bold text-foreground">{minutesLeft}:{secondsLeft.toString().padStart(2, '0')}</span> {t('candle.minutes')}
+                  {t('candle.wait')} <span className="font-bold text-[#a01010]">{minutesLeft}:{secondsLeft.toString().padStart(2, '0')}</span> {t('candle.minutes')}
                 </p>
-              </div>
+              </motion.div>
             )}
           </div>
         </div>
@@ -195,16 +211,16 @@ export function HomePage({ onSelectPerson, onNavigateToSubmit }: HomePageProps) 
     <div className="min-h-screen pt-16">
       {/* Hero Section with Fixed Layout */}
       <section className="relative min-h-[60vh] md:h-[70vh] flex items-center justify-center overflow-hidden">
-        {/* Animated Background */}
+        {/* Somber Animated Background */}
         <motion.div
-          className="absolute inset-0 bg-gradient-to-br from-[#10b981]/10 via-background to-[#ef4444]/10"
+          className="absolute inset-0 bg-gradient-to-br from-[#1a4d2e]/10 via-background to-[#8b0000]/10"
           animate={{
-            backgroundPosition: ['0% 0%', '100% 100%'],
+            opacity: [0.3, 0.5, 0.3],
           }}
           transition={{
-            duration: 20,
+            duration: 8,
             repeat: Infinity,
-            repeatType: 'reverse',
+            ease: "easeInOut"
           }}
         />
         
@@ -213,43 +229,43 @@ export function HomePage({ onSelectPerson, onNavigateToSubmit }: HomePageProps) 
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-[#10b981] via-foreground to-[#ef4444] bg-clip-text text-transparent leading-tight"
+            transition={{ duration: 1.5, ease: "easeOut" }}
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-[#2d5f3f] via-[#e8e8e8] to-[#a01010] bg-clip-text text-transparent leading-tight"
           >
             {t('home.hero.title')}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            transition={{ duration: 1.5, delay: 0.4, ease: "easeOut" }}
             className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground mb-8 md:mb-12 px-4"
           >
             {t('home.hero.subtitle')}
           </motion.p>
 
-          {/* Live Data Dashboard - Mobile Optimized */}
+          {/* Live Data Dashboard - Somber Colors */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            transition={{ duration: 1.5, delay: 0.7, ease: "easeOut" }}
             className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mt-8 md:mt-12"
           >
             {[
-              { label: t('stats.lives.lost'), value: mockStats.livesLost, color: 'from-[#ef4444] to-red-600' },
-              { label: t('stats.injured'), value: mockStats.injured, color: 'from-orange-500 to-yellow-500' },
-              { label: t('stats.arrests'), value: mockStats.arrests, color: 'from-[#10b981] to-emerald-600' },
+              { label: t('stats.lives.lost'), value: mockStats.livesLost, color: 'from-[#8b0000] to-[#6b0000]' },
+              { label: t('stats.injured'), value: mockStats.injured, color: 'from-[#b45f06] to-[#7f4302]' },
+              { label: t('stats.arrests'), value: mockStats.arrests, color: 'from-[#1a4d2e] to-[#0f3820]' },
             ].map((stat, index) => (
               <motion.div
                 key={stat.label}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 + index * 0.1 }}
+                transition={{ delay: 0.9 + index * 0.2, duration: 1 }}
                 className="relative group"
               >
                 {/* Glassmorphism Card */}
-                <div className="relative bg-card/40 backdrop-blur-xl border border-border/50 rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg hover:shadow-2xl transition-all duration-300">
-                  {/* Glow Effect */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-10 rounded-xl md:rounded-2xl transition-opacity duration-300`} />
+                <div className="relative bg-card/40 backdrop-blur-xl border border-[#8b0000]/30 rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg hover:shadow-[0_0_30px_rgba(139,0,0,0.3)] transition-all duration-500">
+                  {/* Subtle Glow Effect */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-20 rounded-xl md:rounded-2xl transition-opacity duration-500`} />
                   
                   <div className="relative z-10">
                     <div className={`text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-br ${stat.color} bg-clip-text text-transparent mb-1 md:mb-2`}>
@@ -275,16 +291,16 @@ export function HomePage({ onSelectPerson, onNavigateToSubmit }: HomePageProps) 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
           className="text-center mb-12 md:mb-16"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 md:mb-4">{t('home.fallen.title')}</h2>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 md:mb-4 text-[#e8e8e8]">{t('home.fallen.title')}</h2>
           <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
             {t('home.fallen.subtitle')}
           </p>
         </motion.div>
 
-        {/* Grid - Mobile Optimized */}
+        {/* Grid - Slower Staggered Animation */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-8 md:mb-12">
           {currentData.map((person, index) => (
             <motion.div
@@ -292,67 +308,67 @@ export function HomePage({ onSelectPerson, onNavigateToSubmit }: HomePageProps) 
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ scale: 1.03, y: -10 }}
+              transition={{ duration: 0.8, delay: index * 0.15, ease: "easeOut" }}
+              whileHover={{ scale: 1.02, y: -10 }}
               onClick={() => onSelectPerson(person)}
               className="cursor-pointer group"
             >
-              {/* Legacy Card with Glassmorphism */}
-              <div className="relative bg-card/60 backdrop-blur-xl border border-border/50 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300">
+              {/* Legacy Card with Dark Glassmorphism */}
+              <div className="relative bg-card/40 backdrop-blur-xl border border-[#8b0000]/30 rounded-2xl overflow-hidden shadow-lg hover:shadow-[0_0_40px_rgba(139,0,0,0.3)] transition-all duration-700">
                 {/* Image */}
                 <div className="relative h-56 sm:h-64 overflow-hidden">
                   <img
                     src={person.imageUrl}
                     alt={person.name}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale-[0.3] group-hover:grayscale-0"
                   />
                   {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                   
-                  {/* Color Accent Strip */}
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#10b981] via-white to-[#ef4444]" />
+                  {/* Color Accent Strip - Somber Colors */}
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#1a4d2e] via-[#e8e8e8] to-[#8b0000]" />
                 </div>
 
                 {/* Content */}
-                <div className="p-4 md:p-6">
-                  <h3 className="text-xl md:text-2xl font-bold mb-2">{person.name}</h3>
+                <div className="p-4 md:p-6 bg-gradient-to-b from-transparent to-card/60">
+                  <h3 className="text-xl md:text-2xl font-bold mb-2 text-[#e8e8e8]">{person.name}</h3>
                   
                   <div className="space-y-1.5 md:space-y-2 text-sm text-muted-foreground">
                     <div className="flex justify-between items-center">
                       <span>{t('card.age')}:</span>
-                      <span className="font-medium text-foreground">{person.age}</span>
+                      <span className="font-medium text-[#e8e8e8]">{person.age}</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span>{t('card.location')}:</span>
-                      <span className="font-medium text-foreground">{person.location}</span>
+                      <span className="font-medium text-[#e8e8e8]">{person.location}</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span>{t('card.date')}:</span>
-                      <span className="font-medium text-[#ef4444]">{person.date}</span>
+                      <span className="font-medium text-[#a01010]">{person.date}</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Hover Glow */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#10b981]/0 via-transparent to-[#ef4444]/0 group-hover:from-[#10b981]/10 group-hover:to-[#ef4444]/10 transition-all duration-300 pointer-events-none" />
+                {/* Subtle Hover Glow */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#1a4d2e]/0 via-transparent to-[#8b0000]/0 group-hover:from-[#1a4d2e]/20 group-hover:to-[#8b0000]/20 transition-all duration-700 pointer-events-none" />
               </div>
             </motion.div>
           ))}
         </div>
 
-        {/* Pagination - Mobile Optimized */}
+        {/* Pagination - Dark Theme */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
+          transition={{ delay: 1.2, duration: 1 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
             onClick={() => setCurrentPage(Math.max(0, currentPage - 1))}
             disabled={currentPage === 0}
-            className="flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 rounded-xl bg-secondary hover:bg-secondary/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm md:text-base"
+            className="flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 rounded-xl bg-secondary/80 hover:bg-secondary border border-border disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 text-sm md:text-base"
           >
             {isRTL ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
             <span>{t('pagination.previous')}</span>
@@ -363,10 +379,10 @@ export function HomePage({ onSelectPerson, onNavigateToSubmit }: HomePageProps) 
               <button
                 key={index}
                 onClick={() => setCurrentPage(index)}
-                className={`w-8 h-8 md:w-10 md:h-10 rounded-lg transition-colors text-sm md:text-base ${
+                className={`w-8 h-8 md:w-10 md:h-10 rounded-lg transition-all duration-300 text-sm md:text-base ${
                   currentPage === index
-                    ? 'bg-gradient-to-br from-[#10b981] to-[#ef4444] text-white'
-                    : 'bg-secondary hover:bg-secondary/80'
+                    ? 'bg-gradient-to-br from-[#1a4d2e] to-[#8b0000] text-[#e8e8e8] shadow-[0_0_20px_rgba(139,0,0,0.4)]'
+                    : 'bg-secondary/80 hover:bg-secondary border border-border'
                 }`}
               >
                 {index + 1}
@@ -375,30 +391,30 @@ export function HomePage({ onSelectPerson, onNavigateToSubmit }: HomePageProps) 
           </div>
 
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
             onClick={() => setCurrentPage(Math.min(totalPages - 1, currentPage + 1))}
             disabled={currentPage === totalPages - 1}
-            className="flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 rounded-xl bg-secondary hover:bg-secondary/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm md:text-base"
+            className="flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 rounded-xl bg-secondary/80 hover:bg-secondary border border-border disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 text-sm md:text-base"
           >
             <span>{t('pagination.next')}</span>
             {isRTL ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
           </motion.button>
         </motion.div>
 
-        {/* CTA to Submit - Mobile Optimized */}
+        {/* CTA to Submit */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
           className="text-center mt-12 md:mt-20"
         >
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
             onClick={onNavigateToSubmit}
-            className="px-6 md:px-8 py-3 md:py-4 rounded-xl bg-gradient-to-r from-[#10b981] to-[#ef4444] text-white font-semibold shadow-lg hover:shadow-2xl transition-all text-sm md:text-base"
+            className="px-6 md:px-8 py-3 md:py-4 rounded-xl bg-gradient-to-r from-[#1a4d2e] to-[#8b0000] text-[#e8e8e8] font-semibold shadow-lg hover:shadow-[0_0_30px_rgba(139,0,0,0.4)] transition-all duration-500 text-sm md:text-base border border-[#8b0000]/50"
           >
             {t('submit.title')}
           </motion.button>

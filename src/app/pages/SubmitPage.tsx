@@ -74,14 +74,14 @@ export function SubmitPage({ onBack }: SubmitPageProps) {
       {/* Hero Section */}
       <section className="relative py-12 md:py-20 overflow-hidden">
         <motion.div
-          className="absolute inset-0 bg-gradient-to-br from-[#10b981]/5 via-background to-[#ef4444]/5"
+          className="absolute inset-0 bg-gradient-to-br from-[#1a4d2e]/5 via-background to-[#8b0000]/5"
           animate={{
-            backgroundPosition: ['0% 0%', '100% 100%'],
+            opacity: [0.3, 0.5, 0.3],
           }}
           transition={{
-            duration: 15,
+            duration: 8,
             repeat: Infinity,
-            repeatType: 'reverse',
+            ease: "easeInOut"
           }}
         />
 
@@ -89,10 +89,10 @@ export function SubmitPage({ onBack }: SubmitPageProps) {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
             className="text-center max-w-3xl mx-auto mb-12 md:mb-16"
           >
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-[#10b981] via-foreground to-[#ef4444] bg-clip-text text-transparent">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-[#2d5f3f] via-[#e8e8e8] to-[#a01010] bg-clip-text text-transparent">
               {t('submit.title')}
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-muted-foreground px-4">
@@ -100,11 +100,11 @@ export function SubmitPage({ onBack }: SubmitPageProps) {
             </p>
           </motion.div>
 
-          {/* Security Trust Cards - Mobile Optimized */}
+          {/* Security Trust Cards - Dark Theme */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.4, duration: 1.2 }}
             className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto mb-12 md:mb-16"
           >
             {[
@@ -112,34 +112,34 @@ export function SubmitPage({ onBack }: SubmitPageProps) {
                 icon: Lock,
                 title: t('submit.security.encryption'),
                 desc: t('submit.security.encryption.desc'),
-                color: 'from-[#10b981] to-emerald-600',
+                color: 'from-[#1a4d2e] to-[#0f3820]',
               },
               {
                 icon: Shield,
                 title: t('submit.security.anonymity'),
                 desc: t('submit.security.anonymity.desc'),
-                color: 'from-blue-500 to-indigo-600',
+                color: 'from-[#1e3a5f] to-[#0f1e3a]',
               },
               {
                 icon: Code,
                 title: t('submit.security.opensource'),
                 desc: t('submit.security.opensource.desc'),
-                color: 'from-[#ef4444] to-red-600',
+                color: 'from-[#8b0000] to-[#6b0000]',
               },
             ].map((item, index) => (
               <motion.div
                 key={item.title}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 + index * 0.1 }}
-                whileHover={{ scale: 1.03, y: -5 }}
+                transition={{ delay: 0.6 + index * 0.2, duration: 1 }}
+                whileHover={{ scale: 1.02, y: -5 }}
                 className="relative group"
               >
-                <div className="bg-card/60 backdrop-blur-xl border border-border/50 rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg hover:shadow-2xl transition-all">
+                <div className="bg-card/40 backdrop-blur-xl border border-[#8b0000]/30 rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg hover:shadow-[0_0_30px_rgba(139,0,0,0.2)] transition-all duration-500">
                   <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center mb-3 md:mb-4`}>
-                    <item.icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                    <item.icon className="w-5 h-5 md:w-6 md:h-6 text-[#e8e8e8]" />
                   </div>
-                  <h3 className="font-semibold text-base md:text-lg mb-1 md:mb-2">{item.title}</h3>
+                  <h3 className="font-semibold text-base md:text-lg mb-1 md:mb-2 text-[#e8e8e8]">{item.title}</h3>
                   <p className="text-xs md:text-sm text-muted-foreground">{item.desc}</p>
                 </div>
               </motion.div>
@@ -150,10 +150,10 @@ export function SubmitPage({ onBack }: SubmitPageProps) {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
+            transition={{ delay: 0.8, duration: 1.2 }}
             className="max-w-3xl mx-auto"
           >
-            <div className="bg-card/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6 md:p-12 shadow-lg">
+            <div className="bg-card/40 backdrop-blur-xl border border-[#8b0000]/30 rounded-2xl p-6 md:p-12 shadow-lg">
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Personal Information Section */}
                 <div className="border-b border-border/50 pb-6">

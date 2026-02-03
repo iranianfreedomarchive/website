@@ -32,7 +32,7 @@ export function ProfilePage({ person, onBack }: ProfilePageProps) {
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
         
         {/* Color Accent Strip */}
-        <div className="absolute top-0 left-0 right-0 h-1 md:h-2 bg-gradient-to-r from-[#10b981] via-white to-[#ef4444]" />
+        <div className="absolute top-0 left-0 right-0 h-1 md:h-2 bg-gradient-to-r from-[#1a4d2e] via-[#e8e8e8] to-[#8b0000]" />
 
         {/* Back Button */}
         <motion.button
@@ -85,10 +85,10 @@ export function ProfilePage({ person, onBack }: ProfilePageProps) {
         >
           <div className="relative">
             <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
               onClick={() => setShowShareMenu(!showShareMenu)}
-              className="flex items-center gap-2 px-4 md:px-6 py-2.5 md:py-3 rounded-xl bg-gradient-to-r from-[#10b981] to-[#ef4444] text-white font-semibold shadow-lg hover:shadow-2xl transition-all text-sm md:text-base"
+              className="flex items-center gap-2 px-4 md:px-6 py-2.5 md:py-3 rounded-xl bg-gradient-to-r from-[#1a4d2e] to-[#8b0000] text-[#e8e8e8] font-semibold shadow-lg hover:shadow-[0_0_30px_rgba(139,0,0,0.4)] transition-all duration-500 text-sm md:text-base border border-[#8b0000]/50"
             >
               <Share2 className="w-4 h-4 md:w-5 md:h-5" />
               <span>{t('profile.share')}</span>
@@ -132,9 +132,9 @@ export function ProfilePage({ person, onBack }: ProfilePageProps) {
           transition={{ duration: 0.6 }}
           className="max-w-4xl mx-auto mb-12 md:mb-16"
         >
-          <div className="bg-card/60 backdrop-blur-xl border border-border/50 rounded-2xl p-6 md:p-8 lg:p-12 shadow-lg">
+          <div className="bg-card/60 backdrop-blur-xl border border-[#8b0000]/30 rounded-2xl p-6 md:p-8 lg:p-12 shadow-lg">
             <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6 flex items-center gap-3">
-              <div className="w-1 h-6 md:h-8 bg-gradient-to-b from-[#10b981] to-[#ef4444] rounded-full" />
+              <div className="w-1 h-6 md:h-8 bg-gradient-to-b from-[#1a4d2e] to-[#8b0000] rounded-full" />
               {t('profile.biography')}
             </h2>
             <p className="text-base md:text-lg leading-relaxed text-muted-foreground">
@@ -189,9 +189,9 @@ export function ProfilePage({ person, onBack }: ProfilePageProps) {
           transition={{ duration: 0.6 }}
           className="max-w-3xl mx-auto mt-12 md:mt-16 text-center"
         >
-          <div className="relative bg-gradient-to-br from-[#10b981]/10 via-background to-[#ef4444]/10 rounded-2xl p-8 md:p-12 border border-border/50">
+          <div className="relative bg-gradient-to-br from-[#1a4d2e]/10 via-background to-[#8b0000]/10 rounded-2xl p-8 md:p-12 border border-[#8b0000]/30">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
-              <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-[#10b981] to-[#ef4444] flex items-center justify-center text-xl md:text-2xl">
+              <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-[#1a4d2e] to-[#8b0000] flex items-center justify-center text-xl md:text-2xl">
                 🕊️
               </div>
             </div>
